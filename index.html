@@ -267,6 +267,25 @@
   .hadd{width:100%;border-style:dashed}
   .hnote{font-size:11px;line-height:1.7;color:var(--muted);background:var(--panel2);border-radius:10px;padding:10px 12px}
   .hnote b{color:var(--text)}
+  /* CLOUD */
+  .hdrright{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .cloudchip{font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 10px;border-radius:20px;border:1px solid var(--line);background:var(--panel);color:var(--muted);cursor:pointer}
+  .cloudchip.on{color:var(--green);border-color:rgba(57,255,136,.45)}
+  .cloudchip.sync{color:var(--cyan);border-color:rgba(61,224,255,.45)}
+  .cloudchip.err{color:var(--red);border-color:rgba(255,59,92,.45)}
+  .cloudcard{margin-bottom:22px}
+  .cnote{font-size:12px;color:var(--muted);line-height:1.6;margin:0 0 12px}
+  .cnote b{color:var(--text)}
+  #cloudIn .cnote{margin:12px 0 0}
+  .cform{display:grid;gap:8px;margin-bottom:10px}
+  .cform input{width:100%;padding:13px 12px;border-radius:10px;border:1px solid var(--line);background:#05070a;color:#fff;font-family:inherit;font-size:14px;box-shadow:var(--shadow-in)}
+  .linkbtn{background:none;border:none;color:var(--muted);font-family:inherit;font-size:11px;margin-top:10px;cursor:pointer;text-decoration:underline;padding:0}
+  .cuser{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;background:var(--panel2);margin-bottom:12px}
+  .cuser b{font-size:13px;word-break:break-all}
+  .cuser small{display:block;font-size:11px;color:var(--muted);margin-top:3px}
+  .cdot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);flex:none}
+  .cdot.sync{background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+  .cdot.err{background:var(--red);box-shadow:0 0 8px var(--red)}
   /* ANALYSIS */
   .analysis{margin-bottom:22px}
   .verdict{font-size:14px;line-height:1.6;padding:14px 16px;border-radius:14px;background:var(--panel2);box-shadow:var(--shadow-in);margin-bottom:14px;border-left:3px solid var(--muted)}
@@ -325,9 +344,12 @@
       <h1>DOPAMİN <span>RESEPTÖR</span> İYİLEŞME</h1>
       <div class="sub" id="today"></div>
     </div>
+    <div class="hdrright">
+    <button class="cloudchip" id="cloudChip" title="Bulut hesabı">☁ Bağlı değil</button>
     <div class="daybadge">
       <div class="n"><span id="dayNo">0</span></div>
       <div class="l">KAYITLI GÜN</div>
+    </div>
     </div>
   </header>
 
@@ -430,6 +452,31 @@
     </div>
   </section>
 
+  <!-- BULUT -->
+  <section class="card cloudcard" id="cloudCard">
+    <div class="panelh"><h2 class="orb" style="color:var(--cyan)">☁ BULUT HESABI</h2><small id="cloudState"></small></div>
+    <div id="cloudOut">
+      <p class="cnote">Giriş yaparsan verilerin Firebase'de saklanır. Telefonun silinse ya da cihaz değiştirsen bile giriş yapınca her şey geri gelir.</p>
+      <div class="cform">
+        <input type="email" id="cEmail" placeholder="E-posta" autocomplete="email" inputmode="email">
+        <input type="password" id="cPass" placeholder="Şifre (en az 6 karakter)" autocomplete="current-password">
+      </div>
+      <div class="datarow">
+        <button class="sbtn" id="cLogin">GİRİŞ YAP</button>
+        <button class="sbtn" id="cSignup">YENİ HESAP OLUŞTUR</button>
+      </div>
+      <button class="linkbtn" id="cForgot">Şifremi unuttum</button>
+    </div>
+    <div id="cloudIn" style="display:none">
+      <div class="cuser"><span class="cdot"></span><div><b id="cUser"></b><small id="cSync"></small></div></div>
+      <div class="datarow">
+        <button class="sbtn" id="cSyncNow">⟳ ŞİMDİ EŞİTLE</button>
+        <button class="sbtn danger" id="cLogout">ÇIKIŞ YAP</button>
+      </div>
+      <p class="cnote">Her <b>Günü Kaydet</b>'te veri otomatik olarak buluta gider. Çıkış yapsan da bu cihazdaki veri silinmez.</p>
+    </div>
+  </section>
+
   <!-- VERİ -->
   <section class="card datacard">
     <div class="panelh"><h2 class="orb" style="color:var(--text)">💾 YEDEKLE / GERİ YÜKLE</h2></div>
@@ -451,7 +498,7 @@
 <div class="modal" id="modal">
   <div class="card">
     <h2>⚠ PROTOKOLÜ SIFIRLA</h2>
-    <p>Tüm geçmiş, rozetler ve bar seviyesi silinecek; bar %0'a dönecek. Alışkanlık listen korunur. Bu işlem geri alınamaz.<br><br>Onaylamak için <b style="color:var(--red)">SIFIRLA</b> yaz:</p>
+    <p>Tüm geçmiş, rozetler ve bar seviyesi silinecek; bar %0'a dönecek. Alışkanlık listen korunur. Buluta giriş yaptıysan buluttaki veri de sıfırlanır. Bu işlem geri alınamaz.<br><br>Onaylamak için <b style="color:var(--red)">SIFIRLA</b> yaz:</p>
     <input id="confirmInput" autocomplete="off" placeholder="SIFIRLA">
     <div class="btns">
       <button class="btn btn-ghost" id="cancelReset">VAZGEÇ</button>
@@ -493,6 +540,9 @@
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script>
 /* ================== AYARLAR ================== */
 const START_LEVEL = 0, END_LEVEL = 100, TOTAL_DAYS = 180;
@@ -544,12 +594,13 @@ function load(){
   try{ const d = JSON.parse(localStorage.getItem(STORE_KEY)); if(d && d.entries) return d; }catch(e){}
   return {startDate:null, entries:{}};
 }
+function commit(){ state.updatedAt = Date.now(); const ok = persist(); cloudPush(); return ok; }
 function persist(){
   try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); return true; }catch(e){ return false; }
 }
 let state = load();
-(function migrateHabits(){
-  if(!state.habits) return;
+function migrateHabits(){
+  if(!state.habits) return false;
   let changed = false;
   [['good',DEFAULT_GOOD],['bad',DEFAULT_BAD]].forEach(([t,defs])=>{
     defs.filter(d=>d.since).forEach(d=>{
@@ -566,7 +617,9 @@ let state = load();
     state.migrations.push('pen105_4_2026_10_16'); changed = true;
   }
   if(changed) persist();
-})();
+  return changed;
+}
+migrateHabits();
 
 /* ================== YARDIMCILAR ================== */
 const $ = id => document.getElementById(id);
@@ -911,7 +964,7 @@ $('backToday').addEventListener('click', ()=>editDay(TODAY));
 $('delDay').addEventListener('click', ()=>{
   if(!state.entries[EDIT_DAY]) return;
   if(!confirm(`${longDate(EDIT_DAY)} kaydı silinsin mi? Bar yeniden hesaplanır.`)) return;
-  delete state.entries[EDIT_DAY]; fixStart(); persist();
+  delete state.entries[EDIT_DAY]; fixStart(); commit();
   const k = EDIT_DAY; EDIT_DAY = TODAY;
   renderHabits(); renderMain(); toast(`${shortDate(k)} kaydı silindi`);
 });
@@ -1041,7 +1094,7 @@ $('backupBtn').addEventListener('click', ()=>{
   a.href = URL.createObjectURL(blob); a.download = `dopamin-yedek-${TODAY}.json`;
   document.body.appendChild(a); a.click();
   setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1500);
-  persist(); renderBackupInfo(); toast('Yedek dosyası indirildi');
+  commit(); renderBackupInfo(); toast('Yedek dosyası indirildi');
 });
 $('restoreBtn').addEventListener('click', ()=>$('restoreFile').click());
 $('restoreFile').addEventListener('change', e=>{
@@ -1056,7 +1109,7 @@ $('restoreFile').addEventListener('change', e=>{
       const n = Object.keys(st.entries).length;
       if(!confirm(`Yedekte ${n} günlük kayıt var. Şu anki verilerin yerine geçsin mi?`)) return;
       state = {startDate:null, entries:st.entries, badges:st.badges||{}, lastBackup:st.lastBackup||null, habits:st.habits||null};
-      fixStart(); persist();
+      fixStart(); commit();
       EDIT_DAY = TODAY; shown = levelOf(series(false));
       renderHabits(); renderMain(); toast(`Geri yüklendi · ${n} gün`);
     }catch(err){ toast('Bu dosya geçerli bir yedek değil', true); }
@@ -1133,11 +1186,176 @@ $('hSave').addEventListener('click', ()=>{
   if(!act.good.length && !act.bad.length){ toast('En az bir alışkanlık olmalı', true); return; }
   all.forEach(h=>delete h._new);
   state.habits = hDraft; hDraft = null;
-  if(!persist()){ toast('Kaydedilemedi', true); return; }
+  if(!commit()){ toast('Kaydedilemedi', true); return; }
   $('hModal').classList.remove('show');
   renderHabits(); renderMain();
   toast(`Alışkanlıklar güncellendi · ${act.good.length} iyi, ${act.bad.length} kötü`);
 });
+
+/* ================== BULUT (FIREBASE) ================== */
+const firebaseConfig = {
+  apiKey: "AIzaSyBuxmlFak8AfYSdGRT_aD3dzKFjKPhVaGs",
+  authDomain: "dopamin-burak.firebaseapp.com",
+  projectId: "dopamin-burak",
+  storageBucket: "dopamin-burak.firebasestorage.app",
+  messagingSenderId: "459862911564",
+  appId: "1:459862911564:web:79ef8d7daca8f7651c62e9"
+};
+const cloud = {ok:false, auth:null, db:null, user:null, status:'off', last:null, err:''};
+try{
+  if(typeof firebase !== 'undefined'){
+    firebase.initializeApp(firebaseConfig);
+    cloud.auth = firebase.auth(); cloud.db = firebase.firestore(); cloud.ok = true;
+  }
+}catch(e){ console.warn('Firebase başlatılamadı', e); }
+
+function cloudErr(e){
+  const c = (e && e.code) || '';
+  const m = {
+    'auth/invalid-email':'E-posta adresi geçersiz.',
+    'auth/missing-password':'Şifre gir.',
+    'auth/weak-password':'Şifre en az 6 karakter olmalı.',
+    'auth/email-already-in-use':'Bu e-posta ile zaten hesap var. “Giriş yap”ı kullan.',
+    'auth/invalid-credential':'E-posta ya da şifre yanlış.',
+    'auth/wrong-password':'E-posta ya da şifre yanlış.',
+    'auth/user-not-found':'Bu e-posta ile hesap yok. “Yeni hesap oluştur”u kullan.',
+    'auth/too-many-requests':'Çok fazla deneme yapıldı, biraz sonra tekrar dene.',
+    'auth/network-request-failed':'İnternet bağlantısı yok.',
+    'auth/operation-not-allowed':'Firebase\'de Email/Password girişi açık değil (Authentication → Sign-in method).',
+    'auth/unauthorized-domain':'Bu adres Firebase\'de izinli değil (Authentication → Settings → Authorized domains).',
+    'permission-denied':'Veritabanı izni yok. Firestore kuralını yapıştırıp Publish ettiğini kontrol et.',
+    'failed-precondition':'Firestore veritabanı oluşturulmamış olabilir.',
+    'unavailable':'Buluta şu an ulaşılamıyor, internetini kontrol et.'
+  };
+  return m[c] || ('Bir hata oluştu' + (c ? ' ('+c+')' : '') + '.');
+}
+const timeStr = t => new Date(t).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
+function setCloud(status, err){
+  cloud.status = status; if(err!==undefined) cloud.err = err;
+  renderCloud();
+}
+function renderCloud(){
+  const chip = $('cloudChip');
+  if(!cloud.ok){
+    chip.textContent = '☁ Kapalı'; chip.className = 'cloudchip err';
+    $('cloudState').textContent = 'Firebase yüklenemedi (internet?)';
+    $('cloudIn').style.display='none'; $('cloudOut').style.display='block'; return;
+  }
+  const u = cloud.user;
+  $('cloudIn').style.display = u ? 'block' : 'none';
+  $('cloudOut').style.display = u ? 'none' : 'block';
+  if(!u){ chip.textContent = '☁ Bağlı değil'; chip.className = 'cloudchip'; $('cloudState').textContent = ''; return; }
+  $('cUser').textContent = u.email;
+  const dot = document.querySelector('.cdot');
+  dot.className = 'cdot' + (cloud.status==='sync'?' sync':cloud.status==='err'?' err':'');
+  if(cloud.status==='sync'){ chip.textContent='☁ Eşitleniyor…'; chip.className='cloudchip sync'; $('cSync').textContent='Eşitleniyor…'; }
+  else if(cloud.status==='err'){ chip.textContent='☁ Hata'; chip.className='cloudchip err'; $('cSync').textContent='⚠ '+cloud.err; }
+  else { chip.textContent='☁ Bağlı'; chip.className='cloudchip on'; $('cSync').textContent = cloud.last ? 'Son eşitleme: '+timeStr(cloud.last) : 'Bağlı'; }
+  $('cloudState').textContent = cloud.status==='err' ? '' : '✓ Bağlı';
+}
+const userRef = () => cloud.db.collection('users').doc(cloud.user.uid);
+async function pushNow(){
+  if(!cloud.user) return;
+  setCloud('sync');
+  try{
+    await userRef().set({
+      data: JSON.stringify(state),
+      updatedAt: state.updatedAt || Date.now(),
+      days: Object.keys(state.entries).length,
+      savedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    cloud.last = Date.now(); setCloud('ok', '');
+  }catch(e){ setCloud('err', cloudErr(e)); }
+}
+let pushT = null;
+function cloudPush(){
+  if(!cloud.user) return;
+  clearTimeout(pushT); setCloud('sync');
+  pushT = setTimeout(pushNow, 1200);
+}
+function applyCloud(cs){
+  state = {startDate:null, entries:cs.entries||{}, badges:cs.badges||{}, lastBackup:cs.lastBackup||null,
+           habits:cs.habits||null, migrations:cs.migrations||[], updatedAt:cs.updatedAt||Date.now()};
+  fixStart(); persist();
+  if(migrateHabits()) commit();
+  EDIT_DAY = TODAY; shown = levelOf(series(false));
+  renderHabits(); renderMain();
+}
+const hasData = st => st && (Object.keys(st.entries||{}).length > 0 || !!st.habits);
+// interactive: kullanıcı az önce giriş yaptıysa, iki tarafta da farklı veri varsa hangisinin kullanılacağını sorar
+async function cloudSync(interactive){
+  if(!cloud.user) return;
+  setCloud('sync');
+  try{
+    const snap = await userRef().get();
+    if(!snap.exists){
+      if(!state.updatedAt){ state.updatedAt = Date.now(); persist(); }
+      await pushNow();
+      if(interactive) toast('Bulut hesabı hazır · veriler yüklendi');
+      return;
+    }
+    const c = snap.data(); let cs = null;
+    try{ cs = JSON.parse(c.data); }catch(e){}
+    if(!cs || typeof cs.entries !== 'object'){ await pushNow(); return; }
+    const lu = state.updatedAt || 0, cu = c.updatedAt || 0;
+    const same = JSON.stringify(cs.entries) === JSON.stringify(state.entries) && JSON.stringify(cs.habits||null) === JSON.stringify(state.habits||null);
+    if(same){ cloud.last = Date.now(); setCloud('ok', ''); return; }
+    let takeCloud;
+    if(!hasData(state)) takeCloud = true;
+    else if(!hasData(cs)) takeCloud = false;
+    else if(interactive){
+      const cn = Object.keys(cs.entries).length, ln = Object.keys(state.entries).length;
+      takeCloud = confirm(`Buluttaki veri ile bu cihazdaki veri farklı.\n\n☁ Bulut: ${cn} gün (son değişiklik ${cu ? new Date(cu).toLocaleString('tr-TR') : '?'})\n📱 Bu cihaz: ${ln} gün (son değişiklik ${lu ? new Date(lu).toLocaleString('tr-TR') : '?'})\n\nBULUTTAKİNİ kullanmak için “Tamam”a,\nBU CİHAZDAKİNİ kullanmak için “İptal”e bas.`);
+    }
+    else takeCloud = cu > lu;
+    if(takeCloud){ applyCloud(cs); cloud.last = Date.now(); setCloud('ok', ''); toast(`Buluttan yüklendi · ${Object.keys(cs.entries).length} gün`); }
+    else { if(!state.updatedAt){ state.updatedAt = Date.now(); persist(); } await pushNow(); }
+  }catch(e){ setCloud('err', cloudErr(e)); }
+}
+let justSignedIn = false;
+if(cloud.ok){
+  cloud.auth.onAuthStateChanged(u=>{
+    cloud.user = u || null; renderCloud();
+    if(u){ const inter = justSignedIn; justSignedIn = false; cloudSync(inter); }
+  });
+  document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible' && cloud.user) cloudSync(false); });
+}
+function credVals(){
+  const e = $('cEmail').value.trim(), p = $('cPass').value;
+  if(!e){ toast('E-posta gir', true); return null; }
+  if(p.length < 6){ toast('Şifre en az 6 karakter olmalı', true); return null; }
+  return [e,p];
+}
+async function doAuth(kind){
+  if(!cloud.ok){ toast('Firebase yüklenemedi, internetini kontrol et', true); return; }
+  const v = credVals(); if(!v) return;
+  const btns = [$('cLogin'), $('cSignup')]; btns.forEach(b=>b.disabled=true);
+  try{
+    justSignedIn = true;
+    if(kind==='login') await cloud.auth.signInWithEmailAndPassword(v[0], v[1]);
+    else await cloud.auth.createUserWithEmailAndPassword(v[0], v[1]);
+    $('cPass').value = '';
+    toast(kind==='login' ? 'Giriş yapıldı' : 'Hesap oluşturuldu');
+  }catch(e){ justSignedIn = false; toast(cloudErr(e), true); }
+  btns.forEach(b=>b.disabled=false);
+}
+$('cLogin').addEventListener('click', ()=>doAuth('login'));
+$('cSignup').addEventListener('click', ()=>doAuth('signup'));
+$('cForgot').addEventListener('click', async ()=>{
+  if(!cloud.ok) return;
+  const e = $('cEmail').value.trim();
+  if(!e){ toast('Önce e-postanı yaz', true); return; }
+  try{ await cloud.auth.sendPasswordResetEmail(e); toast('Şifre sıfırlama e-postası gönderildi'); }
+  catch(err){ toast(cloudErr(err), true); }
+});
+$('cLogout').addEventListener('click', async ()=>{
+  if(!confirm('Çıkış yapılsın mı? Bu cihazdaki veri silinmez.')) return;
+  clearTimeout(pushT);
+  try{ await cloud.auth.signOut(); toast('Çıkış yapıldı'); }catch(e){ toast(cloudErr(e), true); }
+});
+$('cSyncNow').addEventListener('click', ()=>cloudSync(true));
+$('cloudChip').addEventListener('click', ()=>$('cloudCard').scrollIntoView({behavior:'smooth', block:'start'}));
+renderCloud();
 
 /* ================== KAYDET / SIFIRLA ================== */
 function toast(msg, err){
@@ -1148,7 +1366,7 @@ $('saveBtn').addEventListener('click',()=>{
   const k = EDIT_DAY, existed = !!state.entries[k];
   state.entries[k] = currentSelection();
   fixStart();
-  if(!persist()){ toast('Kaydedilemedi: tarayıcı depolaması kapalı', true); return; }
+  if(!commit()){ toast('Kaydedilemedi: tarayıcı depolaması kapalı', true); return; }
   const d = calcDelta(state.entries[k], k);
   const label = k===TODAY ? (existed?'Bugün güncellendi':'Gün kaydedildi') : `${shortDate(k)} ${existed?'güncellendi':'kaydedildi'}`;
   if(k !== TODAY){ EDIT_DAY = TODAY; renderHabits(); }
@@ -1165,6 +1383,7 @@ $('doReset').addEventListener('click',()=>{
   state = {startDate:null, entries:{}, badges:{}, habits:state.habits||null};
   EDIT_DAY = TODAY;
   try{ localStorage.removeItem(STORE_KEY); }catch(e){}
+  commit(); // girişliysen bulut da sıfırlanır
   $('modal').classList.remove('show');
   renderHabits(); renderMain(); toast('Sıfırlandı · Bar %0');
 });
